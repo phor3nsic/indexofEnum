@@ -2,7 +2,7 @@ import requests
 import sys
 from bs4 import BeautifulSoup
 
-url = "https://pinacoteca.org.br/wp-content/uploads/"
+url = ""
 extenxions = ['.txt','.sql','.zip','.rar','.bak','.old','.csv','.xml','.doc','.docx']
 direcs = []
 debug = False
