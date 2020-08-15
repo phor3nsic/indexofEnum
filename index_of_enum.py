@@ -5,13 +5,25 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 if len(sys.argv) < 2:
-	print(f"Ex: {sys.argv[0]} http://taget.com/files")
+	print(f"[?] Ex: {sys.argv[0]} http://taget.com/files")
 	sys.exit()
+
+banner = """
+
+                                                       
+ _         _                 ___                       
+|_| ___  _| | ___  _ _  ___ |  _| ___  ___  _ _  _____ 
+| ||   || . || -_||_'_|| . ||  _|| -_||   || | ||     |
+|_||_|_||___||___||_,_||___||_|  |___||_|_||___||_|_|_|
+                                                       
+
+
+"""
 
 url = sys.argv[1]
 extenxions = ['.txt','.sql','.zip','.rar','.bak','.old','.csv','.xml','.doc','.docx','.php','.py','.asp', '.aspx']
 DIRS = []
-debug = True
+debug = False
 proxy_debug = None
 
 HEADER = {
@@ -31,6 +43,8 @@ def check():
 	if req.status_code == 200 and "Index of" not in  req.text:
 		print("[-]No Index of found!")
 		sys.exit()
+	print("[!] Index Of Found!")
+	print("[!] Searching for interesting files...")
 
 def checkExt(url, path):
 	if path == None:
@@ -66,6 +80,7 @@ def getContent(url,path):
 		DIRS.append(path+x)
 	
 def main():
+	print(banner)
 	check()
 	checkExt(url, None)
 	getContent(url, None)
