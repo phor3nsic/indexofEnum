@@ -48,6 +48,21 @@ optional arguments:
 python3 indexofenum.py -u http://taget.com/ 
 
 ```
+
+ > with list
+
+```
+python3 indexofenum.py -l targets.txt
+
+```
+
+> with wordlist
+
+```
+python3 indexofenum.py -l targets.txt -w ../SecLists/Discovery/Web-Content/raft-small-extensions.txt
+
+```
+
 ![](img/result.jpg)
 
 

@@ -28,10 +28,11 @@ args = parser.parse_args()
 
 URLS = []
 DIRS = []
-extenxions = ['.txt','.sql','.zip','.rar','.bak','.old','.csv','.xml','.doc','.docx','.php','.py','.asp', '.aspx']
+extenxions = ['.txt','.sql','.zip','.rar','.bak','.old','.csv','.xml','.doc','.docx','.php','.py','.asp', '.aspx', '.pdf']
 proxy_debug = None
 OUT = None
-SAVE_MODE = False 
+SAVE_MODE = False
+LIST_MODE = False
 
 HEADER = {
 	"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:79.0) Gecko/20100101 Firefox/79.0"
@@ -42,6 +43,7 @@ if args.url != None:
 
 if args.list != None:
 	arq = open(args.list, "r")
+	LIST_MODE = True
 	for x in arq:
 		try:
 			x = x.decode("utf-8")
@@ -76,12 +78,14 @@ if args.output != None:
 
 def check(URL):
 	req = requests.get(URL, proxies=proxy_debug, verify=False, headers=HEADER)
-	
+
 	if req.status_code == 200 :
 
 		if "Index of" not in req.text:
 			if "Directory" not in req.text:
 				print("[-]No Index of found!")
+				if LIST_MODE == True:
+					pass
 				sys.exit()
 
 	print(f"[!] Index Of Found in {URL}")
@@ -90,7 +94,8 @@ def check(URL):
 def checkExt(URL, path):
 	if path == None:
 		path = ""
-	page = requests.get(URL+"/"+path, proxies=proxy_debug, verify=False, headers=HEADER)
+
+	page = requests.get(URL+path, proxies=proxy_debug, verify=False, headers=HEADER)
 	soup = BeautifulSoup(page.content, "html.parser")
 	for x in soup.find_all("a"):
 		for y in extenxions:
@@ -102,17 +107,18 @@ def checkExt(URL, path):
 def checkGit(URL, path):
 	if path == None:
 		path = ""
-	page = requests.get(URL+path+"/.git/HEAD", proxies=proxy_debug, verify=False, headers=HEADER)
-	if page.status_code == 200:
-		print(f"[+]{url}{path}/.git/HEAD")
-	else:
-		pass
+
+	page = requests.get(URL+path, proxies=proxy_debug, verify=False, headers=HEADER, allow_redirects=False)
+	
+	if page.status_code == requests.codes.ok:
+		print(f"[+]{URL}{path}.git/HEAD")
 
 def getContent(URL,path):
 	global DIRS
 	if path == None:
 		path = ""
-	page = requests.get(URL+"/"+path, proxies=proxy_debug, verify=False, headers=HEADER)
+
+	page = requests.get(URL+path, proxies=proxy_debug, verify=False, headers=HEADER)
 	soup = BeautifulSoup(page.content, "html.parser")
 	content = []
 	for x in soup.find_all("a"):
@@ -127,24 +133,26 @@ def saveinfile(out, text):
 	arq.write(text+"\n")
 	arq.close()
 
-def intermed(URLS):
+def recursiveCheck(URL, DIR):
+	checkExt(URL, DIR)
+	#checkGit(URL, DIR)
+	getContent(URL, DIR)
+
+def verify(URLS):
 	global DIRS
 	for URL in URLS:
 		check(URL)
 		checkExt(URL, None)
 		getContent(URL, None)
-		checkGit(URL, None)
+		#checkGit(URL, None)
 
 		for x in DIRS:
-			checkExt(URL, x)
-			checkGit(URL,x)
-			getContent(URL, x)
-
+			recursiveCheck(URL, x)
 		DIRS = []
 	
 def main():
 	print(banner)
-	intermed(URLS)
+	verify(URLS)
 
 if __name__ == '__main__':
 	try:
