@@ -22,7 +22,7 @@ python3 indexofenum.py -u http://taget.com/
 ## Example
 
 ```
-usage: indexofenum.py [-h] [-u URL] [-l LIST] [-d DEBUG] [-o OUTPUT] [-w WORDLIST]
+usage: indexofenum.py [-h] [-u URL] [-l LIST] [-p PROXY] [-o OUTPUT] [-w WORDLIST]
 
 Enumerate files in index of
 
@@ -30,8 +30,8 @@ optional arguments:
   -h, --help            show this help message and exit
   -u URL, --url URL     Url for enum, -u http://target.com/
   -l LIST, --list LIST  List of targets for check, -l targets.txt
-  -d DEBUG, --debug DEBUG
-                        Active Debug mode, -d True or -d False, default:False
+  -p PROXY, --proxy PROXY
+                        Active Debug mode, -p http://127.0.0.1:8080
   -o OUTPUT, --output OUTPUT
                         Save output file, -o outfile.txt
   -w WORDLIST, --wordlist WORDLIST
