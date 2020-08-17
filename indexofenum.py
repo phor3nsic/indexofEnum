@@ -21,7 +21,7 @@ banner = """
 parser = argparse.ArgumentParser(description='Enumerate files in index of', add_help=True)
 parser.add_argument("-u", "--url", help="Url for enum, -u http://target.com/")
 parser.add_argument("-l", "--list", help="List of targets for check, -l targets.txt")
-parser.add_argument("-d", "--debug", help="Active Debug mode, -d True or -d False, default:False")
+parser.add_argument("-p", "--proxy", help="Active Debug mode, -p http://127.0.0.1:8080")
 parser.add_argument("-o", "--output", help="Save output file, -o outfile.txt")
 parser.add_argument("-w", "--wordlist", help="Wordlist of extentions, -w wordlist.txt")
 args = parser.parse_args()
@@ -35,11 +35,6 @@ SAVE_MODE = False
 
 HEADER = {
 	"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:79.0) Gecko/20100101 Firefox/79.0"
-}
-
-proxy = {
-	"http":"http://127.0.0.1:8080",
-	"https":"http://127.0.0.1:8080"
 }
 
 if args.url != None:
@@ -66,7 +61,13 @@ if args.wordlist != None:
 		extenxions = []
 		extenxions.append(x)
 
-if args.debug == True:
+if args.proxy != None:
+
+	proxy = {
+		"http":args.proxy,
+		"https":args.proxy
+	}
+
 	proxy_debug = proxy
 
 if args.output != None:
@@ -125,10 +126,8 @@ def saveinfile(out, text):
 	arq = open(out, "a+")
 	arq.write(text+"\n")
 	arq.close()
-	
-def main():
-	
-	print(banner)
+
+def intermed(URLS):
 	for URL in URLS:
 		check(URL)
 		checkExt(URL, None)
@@ -139,6 +138,10 @@ def main():
 			checkExt(URL, x)
 			checkGit(URL,x)
 			getContent(URL, x)
+	
+def main():
+	print(banner)
+	intermed(URLS)
 
 if __name__ == '__main__':
 	try:
