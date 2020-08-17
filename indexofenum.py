@@ -90,7 +90,7 @@ def check(URL):
 def checkExt(URL, path):
 	if path == None:
 		path = ""
-	page = requests.get(URL+path, proxies=proxy_debug, verify=False, headers=HEADER)
+	page = requests.get(URL+"/"+path, proxies=proxy_debug, verify=False, headers=HEADER)
 	soup = BeautifulSoup(page.content, "html.parser")
 	for x in soup.find_all("a"):
 		for y in extenxions:
@@ -112,7 +112,7 @@ def getContent(URL,path):
 	global DIRS
 	if path == None:
 		path = ""
-	page = requests.get(URL+path, proxies=proxy_debug, verify=False, headers=HEADER)
+	page = requests.get(URL+"/"+path, proxies=proxy_debug, verify=False, headers=HEADER)
 	soup = BeautifulSoup(page.content, "html.parser")
 	content = []
 	for x in soup.find_all("a"):
@@ -128,6 +128,7 @@ def saveinfile(out, text):
 	arq.close()
 
 def intermed(URLS):
+	global DIRS
 	for URL in URLS:
 		check(URL)
 		checkExt(URL, None)
@@ -138,6 +139,8 @@ def intermed(URLS):
 			checkExt(URL, x)
 			checkGit(URL,x)
 			getContent(URL, x)
+
+		DIRS = []
 	
 def main():
 	print(banner)
